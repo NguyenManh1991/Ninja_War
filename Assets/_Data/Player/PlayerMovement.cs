@@ -5,18 +5,19 @@ public class PlayerMovement : MonoBehaviour
      
     [Header("Movement")]
     public Vector3 movement = Vector3.zero;
-    public bool isTurnright = true;
-    public float speed = 2f;
+    public bool isTurnright = true;   
     public bool isMoving = false;
-    public bool groundedPlayer = false;
+    public float speed = 2f;
+    public float moveHorizontal;
     [Header("Jump")]
     public float jumpHeight = 7f;
     public float fall = 3f;
     public bool isJump = false;
+    public bool groundedPlayer = false;
     protected virtual void FixedUpdate()
     {
         groundedPlayer = IsGrounded();
-        PlayerJump();
+        PlayerJump(); 
         Playerfall();
         Moving();
         MoveAnimation();     
@@ -48,14 +49,14 @@ public class PlayerMovement : MonoBehaviour
     protected virtual void Moving()
     {
         if (!IsMoving()) return;
-        float horizontal = InputMannager.Instance.GetValueVelocity().x;
-        movement.x = horizontal*speed;
+      
+        movement.x = speed*moveHorizontal;
     }
 
     protected virtual void PlayerJump()
     {
-        if (!IsMoving()) return;
-         isJump = InputMannager.Instance.GetJump();
+        if (!groundedPlayer) return;
+         
         if (isJump) movement.y = jumpHeight;
     }
     protected virtual void Playerfall()
@@ -68,7 +69,7 @@ public class PlayerMovement : MonoBehaviour
 
         isMoving = false;
         if(isJump) isMoving = true;
-        if (InputMannager.Instance.GetValueVelocity().x != 0) isMoving = true;
+        if (moveHorizontal != 0) isMoving = true;
         return isMoving;
     }
     protected virtual bool IsGrounded()
@@ -79,20 +80,21 @@ public class PlayerMovement : MonoBehaviour
     //protected virtual void Turning()
     //{
     //    isTurnright = true;
-    //    if(InputMannager.Instance.GetPosition().x!=0) direction = InputMannager.Instance.GetPosition().x;
-    //    if(InputMannager.Instance.GetPosition().x<0) isTurnright = false;   
+    //    if (InputMannager.Instance.GetPosition().x != 0) direction = InputMannager.Instance.GetPosition().x;
+    //    if (InputMannager.Instance.GetPosition().x < 0) isTurnright = false;
     //    Vector3 playerRotation = transform.parent.localScale;
     //    if (direction > 0) playerRotation.x = 1f;
-    //    else playerRotation.x = -1f;       
+    //    else playerRotation.x = -1f;
     //    transform.parent.localScale = playerRotation;
     //}
     protected virtual void Turning()
     {
-        Quaternion playerRotation=transform.parent.rotation;
-        if(InputMannager.Instance.GetValueVelocity().x < 0)
+        Quaternion playerRotation = transform.parent.rotation;
+        if (moveHorizontal < 0)
         {
             playerRotation.y = 180;
-        }if(InputMannager.Instance.GetValueVelocity().x > 0)
+        }
+        if (moveHorizontal > 0)
         {
             playerRotation.y = 0;
         }

@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     public Transform playerModel;
     public Animator animator;
     public CharacterController characterController;
+    public PlayerMovement playerMovement;
 
     protected virtual void Awake()
     {
@@ -21,18 +22,23 @@ public class PlayerController : MonoBehaviour
     protected virtual void LoadComponents()
     {
         LoadChar();
+        LoadCharctrl();
     }
     
     protected virtual void Reset()
     {
         LoadComponents();
     }
-    protected virtual void LoadChar()
+    protected virtual void LoadCharctrl()
     {
         characterController = GetComponent<CharacterController>();
+    }
+    protected virtual void LoadChar()
+    {              
         if (playerModel != null) return;
         playerModel = transform.Find("Model").GetComponent<Transform>();
         animator = transform.Find("Model").GetComponent<Animator>();
-        
+        playerMovement = GetComponentInChildren<PlayerMovement>();
     }
+
 }
